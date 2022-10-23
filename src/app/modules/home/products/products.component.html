@@ -1,0 +1,37 @@
+<section class="place-order-block">
+    <div class="container">
+        <div class="top-row">
+            <h3>{{'placeOrder' | translate}}</h3>
+            <form>
+                <input type="search" name="" [(ngModel)]="search" placeholder="{{'search' | translate}}" [ngModelOptions]="{standalone: true}">
+            </form>
+        </div>
+        <div class="po-data-table">
+            <div class="pod-heading-row">
+                <div class="number po-col">{{'productNumber' | translate}}</div>
+                <div class="name po-col">{{'productName' | translate}}</div>
+                <div class="img po-col">{{'productImage' | translate}}</div>
+                <div class="qty po-col">{{'quantity' | translate}}</div>
+                <div class="action po-col">Action</div>
+            </div>
+            <div class="pod-data-row" *ngFor="let item of products | filter:search; let i = index">
+                <div class="number po-col">{{item.product_number}}</div>
+                <div class="name po-col">{{item.product_name}}</div>
+                <div class="img po-col" (click)="onImageClick(item)"><img src="{{item.imageUrl}}" alt=""></div>
+                <div class="qty po-col">
+                    <span>{{'quantity' | translate}}</span>
+                    <div class="qtybox">
+                        <button type="button" id="add" class="add" (click)="updateAddCart(item, 'remove')">-</button>
+                        <input type="number" id="1" [(ngModel)]="item.quantity" min="1" max="100" [ngModelOptions]="{standalone: true}" />
+                        <button type="button" id="sub" class="sub" (click)="updateAddCart(item, 'add')">+</button>
+
+                    </div>
+                </div>
+                <div class="action po-col"><span>Action</span><a href="javascript: void(0)" (click)="updateAddCart(item, 'add_to_cart')">{{'addToCart' | translate}}</a></div>
+            </div>
+        </div>
+        <div class="bottom-btn">
+            <a href="javascript: void(0)" [routerLink]="['/home/confirm-order']">{{'placeOrder' | translate}}</a>
+        </div>
+    </div>
+</section>

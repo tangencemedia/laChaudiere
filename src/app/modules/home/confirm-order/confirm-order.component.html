@@ -1,0 +1,50 @@
+<section class="place-order-block">
+    <div class="container">
+        <div class="top-row">
+            <h3>{{'confirmAnOrder' | translate}}</h3>
+        </div>
+        <div class="po-data-table">
+            <div class="pod-heading-row">
+                <div class="number po-col">{{'productName' | translate}}</div>
+                <div class="name po-col">{{'productName' | translate}}</div>
+                <div class="img po-col">{{'productImage' | translate}}</div>
+                <div class="qty po-col">{{'quantity' | translate}}</div>
+                <div class="action po-col">Action</div>
+            </div>
+            <div class="pod-data-row" *ngFor="let item of products; let i = index">
+                <div class="number po-col"> {{item.product_number}}</div>
+                <div class="name po-col">{{item.product_name}}</div>
+                <div class="img po-col"><img src="{{item.imageUrl}}" alt=""></div>
+                <div class="qty po-col">
+                    <span>{{'quantity' | translate}}</span>
+                    <div class="qtybox">
+                        <button type="button" id="add" class="add" (click)="updateAddCart(item, 'remove')">-</button>
+                        <input type="number" id="1" [value]=item.quantity min="1" max="100" />
+                        <button type="button" id="sub" class="sub" (click)="updateAddCart(item, 'add')">+</button>
+                    </div>
+                </div>
+                <div class="action po-col"><span>Action</span><a href="javascript: void(0)" (click)="updateAddCart(item, 'remove-all')">{{'remove' | translate}}</a></div>
+            </div>
+        </div>
+
+        <div class="note" style="padding-top: 20px;">{{'choseDate' | translate}}</div>
+
+        <div class="note" style="margin-top: 20px">
+            <b>{{'checkout-msg' | translate}}</b>
+        </div>
+
+        <div class="select-date-main">
+            <!-- <dp-date-picker theme="dp-material"
+                            [config]="datePickerConfig"
+                            required="true"
+                            [(ngModel)]="selectedDate"
+                            placeholder="Select Delivery Date">
+</dp-date-picker> -->
+            <input class="input-box" placeholder="Click to select a date" angular-mydatepicker name="mydate" (click)="dp.toggleCalendar()" [(ngModel)]="model" [options]="myDpOptions" #dp="angular-mydatepicker" />
+        </div>
+
+        <div class="bottom-btn">
+            <a href="javascript: void(0)" (click)="confirmOrder()">{{'confirmOrder' | translate}}</a>
+        </div>
+    </div>
+</section>

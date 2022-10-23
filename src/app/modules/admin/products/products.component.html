@@ -1,0 +1,108 @@
+<section class="place-order-block">
+    <div class="container">
+        <div class="top-row">
+            <h3>{{'manageProducts' | translate}}</h3>
+            <form>
+                <input type="search" name="" [(ngModel)]="search" placeholder="{{'search' | translate}}" [ngModelOptions]="{standalone: true}">
+            </form>
+            <div class="bottom-btn margin-0 mr-10 ml-10">
+                <a href="javascript: void(0)" (click)="openModal(template, false)">{{'addNewProduct' | translate}}</a>
+            </div>
+            <div class="bottom-btn margin-0">
+                <a href="javascript: void(0)" (click)="handleImport()">
+               {{'importProductFromExcel'  | translate}}
+                </a>
+            </div>
+        </div>
+        <div class="po-data-table admin">
+            <div class="pod-heading-row">
+                <div class="number po-col">{{'productNumber' | translate}}</div>
+                <div class="name po-col">{{'productName' | translate}}</div>
+                <div class="img po-col">{{'productImage' | translate}}</div>
+                <div class="action po-col">Action</div>
+                <div class="action po-col">{{'delete' | translate}}</div>
+            </div>
+            <div class="pod-data-row" *ngFor="let item of products | filter:search; let i = index">
+                <div class="number po-col">{{item.product_number}}</div>
+                <div class="name po-col">{{item.product_name}}</div>
+                <div class="img po-col" (click)="onImageClick(item)"><img src="{{item.imageUrl}}" alt=""></div>
+                <div class="action po-col"><span>Action</span><a href="javascript: void(0)" (click)="openModal(template, true, item)">{{'editItem' | translate}}</a></div>
+                <div class="action po-col"><span>{{'delete' | translate}}</span>
+                    <a href="javascript: void(0)" (click)="deleteItem(item._id)">
+                        {{'delete' | translate}}</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">
+            {{(productForm?.value.product_name && (productForm?.value._id != '')) ? productForm?.value.product_name : ('addNewProduct' | translate)}}
+        </h4>
+        <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="modalRef?.hide()">
+            <span aria-hidden="true" class="visually-hidden">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="add-new-customer">
+            <form class="common-form" #f="ngForm" [formGroup]="productForm">
+                <div class="field-row">
+                    <div class="field-group width-100" [ngClass]="{'field-error': productForm?.controls?.product_name?.errors && isSubmitted}">
+                        <label>{{'productName' | translate}}</label>
+                        <span class="error-span" *ngIf="(productForm?.controls?.product_name?.errors && isSubmitted)">
+                           {{'pleaseEnterTheProductName' | translate}}
+                        </span>
+                        <input type="text" formControlName="product_name" name="" required="">
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field-group width-100" [ngClass]="{'field-error': productForm?.controls?.product_number?.errors && isSubmitted}">
+                        <label>{{'productNumber' | translate}}</label>
+                        <span class="error-span" *ngIf="(productForm?.controls?.product_number?.errors && isSubmitted)">
+                           {{'pleaseEnterProductNumber' | translate}}
+                        </span>
+                        <input type="number" formControlName="product_number" name="" required="">
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field-group width-100" [ngClass]="{'field-error': productForm?.controls?.imageUrl?.errors && isSubmitted}">
+                        <label>{{'imageURL' | translate}}</label>
+                        <span class="error-span" *ngIf="(productForm?.controls?.imageUrl?.errors && isSubmitted)">
+                            {{'pleaseEnterImageURl' | translate}}
+                        </span>
+                        <input type="file" (change)="onChangeLink($event)">
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field-group width-100" [ngClass]="{'field-error': productForm?.controls?.description?.errors && isSubmitted}">
+                        <label>{{'description' | translate}}</label>
+                        <span class="description-span" *ngIf="(productForm?.controls?.description?.errors && isSubmitted)">
+                           {{'pleaseEnterDescription' | translate}}
+                        </span>
+                        <input type="text" formControlName="description" name="" required="">
+                    </div>
+
+                </div>
+                <div class="field-row">
+                    <div class="field-group d-flex gap-20 align-end">
+                        <label>{{'active' | translate}}</label>
+                        <label class="switch">
+                            <input type="checkbox" formControlName="isAvailable">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="bottom-row">
+                    <input type="submit" name="" [value]="(!productForm?.value._id) ? ('save' | translate): ('edit' | translate)" (click)="upload()">
+                </div>
+            </form>
+        </div>
+    </div>
+</ng-template>
+<input type="file" (change)="onFileChange($event)" multiple="false" style="display: none;" #fileUpload/>

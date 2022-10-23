@@ -1,0 +1,219 @@
+<section class="place-order-block">
+    <div class="container">
+        <div class="top-row">
+            <h3>{{'manageCustomers' | translate}}</h3>
+            <form>
+                <input type="search" name="" [(ngModel)]="search" placeholder="{{'search' | translate}}" [ngModelOptions]="{standalone: true}">
+            </form>
+            <div class="bottom-btn margin-0 mr-10 ml-10">
+                <a href="javascript: void(0)" (click)="openModal(template, false)">{{'addNewCustomer' | translate}}</a>
+            </div>
+            <div class="bottom-btn margin-0">
+                <a href="javascript: void(0)" (click)="handleImport()">
+               {{'importCustFromExcel'  | translate}}
+                </a>
+            </div>
+        </div>
+        <div class="po-data-table customer">
+            <div class="pod-heading-row">
+                <!-- <div class="number po-col">{{'customerNumber' | translate}}</div> -->
+                <div class="client po-col">{{'clientId' | translate}}</div>
+                <!-- <div class="name po-col">{{'name' | translate}}</div> -->
+                <!-- <div class="email po-col">{{'email' | translate}}</div> -->
+                <div class="c-name po-col">{{'companyName' | translate}}</div>
+                <!-- <div class="city po-col">City</div>
+                <div class="phone po-col">Phone</div>
+                <div class="address po-col">Address</div> -->
+                <div class="action po-col">Action</div>
+                <div class="action po-col">{{'delete' | translate}}</div>
+            </div>
+            <div class="pod-data-row" *ngFor="let item of users | filter:search; let i = index">
+                <!-- <div class="number po-col">{{'customer' | translate}} {{i + 1}}</div> -->
+                <div class="client po-col">{{item.clientId}}</div>
+                <!-- <div class="name po-col">{{item.name}}</div> -->
+                <!-- <div class="email po-col">{{item.email}}</div> -->
+                <div class="c-name po-col">{{item.companyName ?? '-'}}</div>
+                <!-- <div class="city po-col">{{item.city}}</div>
+                <div class="phone po-col">{{item.phone}}</div>
+                <div class="address po-col">{{item.address}}</div> -->
+                <div class="action po-col"><span>Action</span><a href="javascript: void(0)" *ngIf="currentUser != item.clientId" (click)="openModal(template, true, item)">{{'editItem' | translate}}</a></div>
+                <div class="action po-col"><span>{{'delete' | translate}}</span><a href="javascript: void(0)" *ngIf="currentUser != item.clientId" (click)="deleteUser(item.clientId)">{{'delete' | translate}}</a></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">
+            {{(userForm?.value._id != '') ? selectedUser?.name : ('addNewCustomer' | translate)}}
+        </h4>
+        <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="modalRef?.hide()">
+            <span aria-hidden="true" class="visually-hidden">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="add-new-customer">
+            <form class="common-form" #f="ngForm" [formGroup]="userForm">
+                <div class="field-row">
+                    <div class="field-group" [ngClass]="{'field-error': userForm?.controls?.clientId?.errors && isSubmitted}">
+                        <label>{{'clientId' | translate}}</label>
+                        <span class="error-span" *ngIf="(userForm?.controls?.clientId?.errors && isSubmitted)">
+                      {{'pleaseEnterClientID' | translate}}
+                    </span>
+                        <input type="text" formControlName="clientId" name="" required="">
+                    </div>
+                    <div class="field-group">
+                        <label>{{'name' | translate}}</label>
+                        <!-- <span class="error-span" *ngIf="(userForm?.controls?.name?.errors && isSubmitted)">
+                            {{'pleaseEnterName' | translate}}
+                        </span> -->
+                        <input type="text" formControlName="name" name="">
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field-group width-100" [ngClass]="{'field-error': userForm?.controls?.email?.errors && isSubmitted}">
+                        <label>{{'email' | translate}}</label>
+                        <span class="error-span" *ngIf="(userForm?.controls?.email?.errors && isSubmitted)">
+                            {{'pleaseEnterEmail' | translate}}
+                        </span>
+                        <input type="text" formControlName="email" name="" required="">
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>{{'password' | translate}}</label>
+                        <!-- <span class="error-span" *ngIf="((userForm?.controls?.password?.errors && isSubmitted) || 
+                    ((userForm.value.password !== userForm.value.confirmPassword) && isSubmitted))">
+                    {{'pleaseEnterPassword' | translate}}
+                        </span> -->
+                        <input type="password" formControlName="password" name="">
+                    </div>
+                    <div class="field-group">
+                        <label>{{'passwordConfirmation' | translate}}</label>
+                        <!-- <span class="error-span" *ngIf="((userForm?.controls?.confirmPassword?.errors && isSubmitted) || 
+                    ((userForm.value.password !== userForm.value.confirmPassword) && isSubmitted))">
+                    {{'pleaseEnterConfirmPassword' | translate}}
+                        </span> -->
+                        <input type="password" formControlName="confirmPassword" name="">
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>{{'phone' | translate}}</label>
+                        <!-- <span class="error-span" *ngIf="(userForm?.controls?.phone?.errors && isSubmitted)">
+                            {{'pleaseEnterPhone' | translate}}
+                        </span> -->
+                        <input type="text" formControlName="phone" name="">
+                    </div>
+                    <div class="field-group">
+                        <label>{{'address' | translate}}</label>
+                        <!-- <span class="error-span" *ngIf="(userForm?.controls?.address?.errors && isSubmitted)">
+                            {{'pleaseEnterAddress' | translate}}
+                        </span> -->
+                        <input type="text" name="" formControlName="address">
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>{{'postalCode' | translate}}</label>
+                        <!-- <span class="error-span" *ngIf="(userForm?.controls?.postalCode?.errors && isSubmitted)">
+                            {{'pleaseEnterPostalCode' | translate}}
+                        </span> -->
+                        <input type="text" formControlName="postalCode" name="">
+                    </div>
+                    <div class="field-group">
+                        <label>{{'city' | translate}}</label>
+                        <!-- <span class="error-span" *ngIf="(userForm?.controls?.city?.errors && isSubmitted)">
+                            {{'pleaseEnterCity' | translate}}
+                        </span> -->
+                        <input type="text" formControlName="city" name="">
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field-group" [ngClass]="{'field-error': userForm?.controls?.companyName?.errors && isSubmitted}">
+                        <label>{{'companyName' | translate}}</label>
+                        <span class="error-span" *ngIf="(userForm?.controls?.companyName?.errors && isSubmitted)">
+                            {{'pleaseEnterCompanyName' | translate}}
+                        </span>
+                        <input type="text" formControlName="companyName" name="" required="">
+                    </div>
+                    <div class="field-group">
+                        <label>{{'role' | translate}}</label>
+                        <div class="d-flex margin-top-sm align-baseline justify-left">
+                            <input type="radio" class="width-20" id="Admin" formControlName="role" name="role" value="admin">
+                            <label for="Admin">{{'admin' | translate}}</label>
+                            <input type="radio" class="width-20" id="Client" formControlName="role" name="role" value="client">
+                            <label for="Client">{{'client' | translate}}</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>{{'location' | translate}}</label>
+                        <input type="text" formControlName="location" name="">
+                        <!-- <span class="error-span" *ngIf="(userForm?.controls?.location?.errors && isSubmitted)">
+                            {{'pleaseEnterLocation' | translate}}
+                        </span> -->
+                    </div>
+                    <div class="field-group d-flex gap-20 align-end">
+                        <label>{{'active' | translate}}</label>
+                        <label class="switch">
+                            <input type="checkbox" formControlName="isActive">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="field-row" *ngIf="userForm?.value?.role =='client'">
+                    <div class="field-group width-100">
+                        <label>{{'deliveryAvailableOn' | translate }}:</label>
+                        <div class="day-wrapper">
+                            <div class="day">
+                                <input type="checkbox" id="monday" name="monday" formControlName="monday">
+                                <label for="monday">{{'monday' | translate}}</label>
+                            </div>
+                            <div class="day">
+                                <input type="checkbox" id="tuesday" name="tuesday" formControlName="tuesday">
+                                <label for="tuesday">{{'tuesday' | translate}}</label>
+                            </div>
+                            <div class="day">
+                                <input type="checkbox" id="wednesday" name="wednesday" formControlName="wednesday">
+                                <label for="wednesday">{{'wednesday' | translate}}</label>
+                            </div>
+                            <div class="day">
+                                <input type="checkbox" id="thursday" name="thursday" formControlName="thursday">
+                                <label for="thursday">{{'thursday' | translate}}</label>
+                            </div>
+                            <div class="day">
+                                <input type="checkbox" id="friday" name="friday" formControlName="friday">
+                                <label for="friday">{{'friday' | translate}}</label>
+                            </div>
+                            <div class="day">
+                                <input type="checkbox" id="saturday" name="saturday" formControlName="saturday">
+                                <label for="saturday">{{'saturday' | translate}}</label>
+                            </div>
+                            <div class="day">
+                                <input type="checkbox" id="sunday" name="sunday" formControlName="sunday">
+                                <label for="sunday">{{'sunday' | translate}}</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="bottom-row">
+                    <input type="submit" name="" [value]="(!userForm?.value._id) ? ('save' | translate): ('edit' | translate)" (click)="updateUser()">
+                </div>
+            </form>
+        </div>
+    </div>
+</ng-template>
+
+<input type="file" (change)="onFileChange($event)" multiple="false" style="display: none;" #fileUpload/>
